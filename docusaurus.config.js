@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Kadras',
   tagline: 'Cloud Native Platform Toolkit',
-  url: 'https://arktonix.github.io',
-  baseUrl: '/kadras-website/',
+  url: 'https://kadras.io',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
