@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkadras_website=self.webpackChunkkadras_website||[]).push([[8762],{7662:a=>{a.exports=JSON.parse('{"label":"hola","permalink":"/kadras-website/blog/tags/hola","allTagsPath":"/kadras-website/blog/tags","count":1}')}}]);
