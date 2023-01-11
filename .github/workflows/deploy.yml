@@ -1,0 +1,16 @@
+name: Deploy
+on: push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - uses: redkubes/docusaurus-deploy-action@v1.2
+        with:
+          source-folder: .
+          git-user: ${{ github.actor }}
+          git-password: ${{ secrets.GITHUB_TOKEN }}
+          deployment-branch: gh-pages
