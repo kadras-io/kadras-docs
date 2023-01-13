@@ -17,7 +17,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="https://github.com/arktonix/kadras-application-platform">
+            to="https://github.com/kadras-io/kadras-application-platform">
             Get Started 🚀
           </Link>
         </div>

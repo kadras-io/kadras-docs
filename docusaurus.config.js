@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Kadras',
   tagline: 'Cloud Native Platform Toolkit',
-  url: 'https://arktonix.github.io',
-  baseUrl: '/kadras-website/',
+  url: 'https://kadras-io.github.io',
+  baseUrl: '/kadras-docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
@@ -17,8 +17,8 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'arktonix', // Usually your GitHub org/user name.
-  projectName: 'kadras-website', // Usually your repo name.
+  organizationName: 'kadras-io', // Usually your GitHub org/user name.
+  projectName: 'kadras-docs', // Usually your repo name.
   deploymentBranch: 'gh-pages',
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -109,12 +109,8 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Arktonix',
-                href: 'https://arktonix.com',
-              },
-              {
                 label: 'GitHub',
-                href: 'https://github.com/arktonix/kadras-application-platform',
+                href: 'https://github.com/kadras-io/kadras-application-platform',
               },
               {
                 label: 'Thomas Vitale',
@@ -123,7 +119,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Arktonix. Built by Thomas Vitale.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Kadras. Built by Thomas Vitale.`,
       },
       prism: {
         theme: lightCodeTheme,

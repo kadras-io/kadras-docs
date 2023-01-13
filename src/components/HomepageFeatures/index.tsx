@@ -14,7 +14,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/undraw_lost_online_re_upmy.svg').default,
     description: (
       <>
-        Kadras provides an <a href="https://github.com/arktonix/kadras-application-platform">application platform</a> you can use as a foundation
+        Kadras provides an <a href="https://github.com/kadras-io/kadras-application-platform">application platform</a> you can use as a foundation
         to implement your own internal developer platform (IDP).
       </>
     ),
@@ -24,7 +24,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/undraw_drone_delivery_re_in95.svg').default,
     description: (
       <>
-        Kadras offers a <a href="https://github.com/arktonix/kadras-packages">curated catalog</a> of all the essential components to build
+        Kadras offers a <a href="https://github.com/kadras-io/kadras-packages">curated catalog</a> of all the essential components to build
         cloud native platforms relying on Carvel package management.
       </>
     ),
@@ -34,7 +34,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/undraw_engineering_team_a7n2.svg').default,
     description: (
       <>
-        Kadras aims at researching <a href="https://github.com/arktonix">cloud native projects</a> and providing a toolkit
+        Kadras aims at researching <a href="https://github.com/kadras-io">cloud native projects</a> and providing a toolkit
         of building blocks useful for several platform engineering scenarios.
       </>
     ),
