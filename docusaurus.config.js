@@ -110,7 +110,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/kadras-io/kadras-application-platform',
+                href: 'https://github.com/kadras-io/engineering-platform',
               },
               {
                 label: 'Thomas Vitale',
