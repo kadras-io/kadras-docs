@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Kadras',
-  tagline: 'Cloud Native Platform Toolkit',
+  tagline: 'Cloud Native Platforms',
   url: 'https://kadras-io.github.io',
   baseUrl: '/kadras-docs/',
   onBrokenLinks: 'throw',
