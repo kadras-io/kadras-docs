@@ -14,7 +14,7 @@ Ensure you have the following tools installed in your local environment:
 * Kubernetes [`kubectl`](https://kubectl.docs.kubernetes.io/installation/kubectl)
 * [kind](https://kind.sigs.k8s.io)
 * Carvel [`kctrl`](https://carvel.dev/kapp-controller/docs/latest/install)
-* Carvel [`kapp`](https://carvel.dev/kapp-controller/docs/latest/install/#installing-kapp-controller-cli-kctrl) CLI.
+* Carvel [`kapp`](https://carvel.dev/kapp-controller/docs/latest/install/#installing-kapp-controller-cli-kctrl).
 
 Then, create a local Kubernetes cluster with kind.
 
@@ -89,20 +89,26 @@ The installation of the Kadras Engineering Platform can be configured via YAML. 
 ```yaml title="values.yml"
 platform:
   ingress:
-    domain: <domain>
+    domain: 127.0.0.1.sslip.io
 
   oci_registry:
     server: <oci-server>
     repository: <oci-repository>
+
+contour:
+  envoy:
+    service:
+      type: ClusterIP
 
 workspace_provisioner:
   namespaces:
     - name: default
 ```
 
-* `<domain>` is the base domain name the platform will use to configure the Ingress controller. It must be a valid DNS name. For example, `lab.thomasvitale.com`.
 * `<oci-server>` is the server of the OCI registry where the platform will publish and consume OCI images. It must be the same used in the previous step when creating a Secret with the OCI registry credentials. For example, `ghcr.io`, `gcr.io`, `quay.io`, `index.docker.io`.
 * `<oci-repository>` is the repository in the OCI registry where the platform will publish and consume OCI images. It must be the same used in the previous step when creating a Secret with the OCI registry credentials. For example, it might be your username or organization name depending on which OCI server you're using.
+
+The Ingress is configured with the special domain `127.0.0.1.sslip.io` which will resolve to your localhost and be accessible via the kind cluster.
 
 ## Install the Platform
 

@@ -17,7 +17,7 @@ git clone https://github.com/thomasvitale/band-service
 
 The platform exposes a Workload API based on [Cartographer](https://cartographer.sh) that developers use to trigger the supply chain for a given application.
 
-Deploy the Band Service application by creating a workload based on the configuration available in `config/workload.yml`.
+Deploy the Band Service application by creating a workload based on the configuration available in `config/workload.yml` using the [Cartographer CLI](https://github.com/ThomasVitale/cartographer-cli).
 
 ```shell
 carto apps workload create --file config/workload.yml
