@@ -21,4 +21,4 @@ The platform provides several capabilities based on open-source projects, includ
 * GitOps support with Flux, ArgoCD and Carvel
 * Air-gapped support with Carvel.
 
-Get started with Kadras by [installing the platform](/docs/getting-started/installation) and [creating your first workload](/docs/getting-started/workload).
+Get started with Kadras by [installing the platform](/docs/getting-started/installation) and [creating your first workload](/docs/getting-started/workload) on a local environment.

@@ -39,4 +39,4 @@ Using the Cartographer CLI, you can inspect the status of a workload and its sup
 carto apps workload get band-service
 ```
 
-The application will be available at `https://band-service.default.<your-domain-name>`, where `<your-domain-name>` is the base domain used during the platform installation.
+The application will be available at `https://band-service.default.127.0.0.1.sslip.io`.
