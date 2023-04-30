@@ -100,10 +100,16 @@ contour:
 workspace_provisioner:
   namespaces:
     - name: default
+  git:
+    credentials:
+      username: <git-username>
+      password: <git-token>
 ```
 
 * `<oci-server>` is the server of the OCI registry where the platform will publish and consume OCI images. It must be the same used in the previous step when creating a Secret with the OCI registry credentials. For example, `ghcr.io`, `gcr.io`, `quay.io`, `index.docker.io`.
 * `<oci-repository>` is the repository in the OCI registry where the platform will publish and consume OCI images. It must be the same used in the previous step when creating a Secret with the OCI registry credentials. For example, it might be your username or organization name depending on which OCI server you're using.
+* `<git-username>` is the name of your GitHub personal account or organization.
+* `<git-token>` is a personal access token with read permissions to your GitHub repositories.
 
 The Ingress is configured with the special domain `127.0.0.1.sslip.io` which will resolve to your localhost and be accessible via the kind cluster.
 
