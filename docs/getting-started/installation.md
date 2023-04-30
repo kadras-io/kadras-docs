@@ -12,24 +12,18 @@ Let's discover how to install Kadras Engineering Platform on a local Kubernetes 
 Ensure you have the following tools installed in your local environment:
 
 * Kubernetes [`kubectl`](https://kubectl.docs.kubernetes.io/installation/kubectl)
-* [kind](https://kind.sigs.k8s.io)
 * Carvel [`kctrl`](https://carvel.dev/kapp-controller/docs/latest/install)
 * Carvel [`kapp`](https://carvel.dev/kapp-controller/docs/latest/install/#installing-kapp-controller-cli-kctrl).
 
-Then, create a local Kubernetes cluster with kind.
+Then, create a local Kubernetes cluster with [kind](https://kind.sigs.k8s.io).
 
 ```shell
 cat <<EOF | kind create cluster --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+name: kadras
 nodes:
 - role: control-plane
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
   extraPortMappings:
   - containerPort: 80
     hostPort: 80
@@ -99,6 +93,9 @@ contour:
   envoy:
     service:
       type: ClusterIP
+    workload:
+      hostPorts:
+        enabled: true
 
 workspace_provisioner:
   namespaces:
