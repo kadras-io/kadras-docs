@@ -10,17 +10,17 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Application Platform',
+    title: 'Engineering Platform',
     Svg: require('@site/static/img/undraw_lost_online_re_upmy.svg').default,
     description: (
       <>
-        Kadras provides an <a href="https://github.com/kadras-io/kadras-application-platform">application platform</a> you can use as a foundation
-        to implement your own internal developer platform (IDP).
+        Kadras provides an <a href="https://github.com/kadras-io/engineering-platform">engineering platform</a> you can use as a foundation
+        to implement your own cloud native internal platforms.
       </>
     ),
   },
   {
-    title: 'Package Catalog',
+    title: 'Application Catalog',
     Svg: require('@site/static/img/undraw_drone_delivery_re_in95.svg').default,
     description: (
       <>

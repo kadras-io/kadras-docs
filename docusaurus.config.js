@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Kadras',
-  tagline: 'Cloud Native Platform Toolkit',
+  tagline: 'Cloud Native Platforms Toolkit',
   url: 'https://kadras-io.github.io',
   baseUrl: '/kadras-docs/',
   onBrokenLinks: 'throw',
@@ -36,17 +36,13 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/kadras-io/kadras-docs/tree/main/docs/',
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/kadras-io/kadras-docs/tree/main/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -65,19 +61,19 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
+          {
+            type: 'doc',
+            docId: 'introduction',
+            position: 'left',
+            label: 'Engineering Platform',
+          },
           {to: '/about', label: 'About', position: 'left'},
-          // {
-          //   type: 'doc',
-          //   docId: 'intro',
-          //   position: 'left',
-          //   label: 'Tutorial',
-          // },
           // {to: '/blog', label: 'Blog', position: 'left'},
-          // {
-          //   href: 'https://github.com/facebook/docusaurus',
-          //   label: 'GitHub',
-          //   position: 'right',
-          // },
+          {
+            href: 'https://github.com/kadras-io',
+            label: 'GitHub',
+            position: 'right',
+          },
         ],
       },
       footer: {
@@ -90,10 +86,10 @@ const config = {
                 label: 'About',
                 to: '/about',
               },
-              // {
-              //   label: 'Tutorial',
-              //   to: '/docs/intro',
-              // },
+              {
+                label: 'Docs',
+                to: '/docs/introduction',
+              },
             ],
           },
           {
@@ -103,6 +99,10 @@ const config = {
                 label: 'Twitter',
                 href: 'https://twitter.com/KadrasIO',
               },
+              {
+                label: 'Mastodon',
+                href: 'https://fosstodon.org/@kadras',
+              },
             ],
           },
           {
@@ -110,7 +110,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/kadras-io/kadras-application-platform',
+                href: 'https://github.com/kadras-io',
               },
               {
                 label: 'Thomas Vitale',

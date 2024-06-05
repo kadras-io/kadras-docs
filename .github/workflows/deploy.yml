@@ -9,7 +9,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v4.1.0
       - name: Deploy website
         uses: redkubes/docusaurus-deploy-action@v1.2
         with:
