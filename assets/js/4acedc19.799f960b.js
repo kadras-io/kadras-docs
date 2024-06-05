@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkadras_docs=self.webpackChunkkadras_docs||[]).push([[659],{6061:s=>{s.exports=JSON.parse('{"permalink":"/kadras-docs/blog/tags/hola","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

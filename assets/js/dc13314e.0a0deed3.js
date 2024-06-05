@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkkadras_docs=self.webpackChunkkadras_docs||[]).push([[927],{2675:s=>{s.exports=JSON.parse('{"permalink":"/kadras-docs/blog/tags/docusaurus","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
