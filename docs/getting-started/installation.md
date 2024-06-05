@@ -48,68 +48,22 @@ kapp deploy -a kapp-controller -y \
 Add the Kadras repository to make the platform packages available to the cluster.
 
   ```shell
-  kubectl create namespace kadras-packages
   kctrl package repository add -r kadras-packages \
-    --url ghcr.io/kadras-io/kadras-packages:0.11.1 \
-    -n kadras-packages
-  ```
-
-## Create a Secret for the OCI Registry
-
-The platform will need to interact with a container registry. Create a Secret with the credentials to access your container registry with read/write permissions. It will be used by the platform to publish and consume OCI artifacts.
-
-  ```shell
-  export SUPPLY_CHAIN_REGISTRY_HOSTNAME=<hostname>
-  export SUPPLY_CHAIN_REGISTRY_USERNAME=<username>
-  export SUPPLY_CHAIN_REGISTRY_TOKEN=<token>
-  ```
-
-* `<hostname>` is the server hosting the OCI registry. For example, `ghcr.io`, `gcr.io`, `quay.io`, `index.docker.io`.
-* `<username>` is the username to access the OCI registry. Use `_json_key` if the hostname is `gcr.io`.
-* `<token>` is a token with read/write permissions to access the OCI registry. Use the contents of the service account key json if the hostname is `gcr.io`.
-
-  ```shell
-  kubectl create secret docker-registry supply-chain-registry-credentials \
-    --docker-server="${SUPPLY_CHAIN_REGISTRY_HOSTNAME}" \
-    --docker-username="${SUPPLY_CHAIN_REGISTRY_USERNAME}" \
-    --docker-password="${SUPPLY_CHAIN_REGISTRY_TOKEN}" \
-    --namespace=kadras-packages
+    --url ghcr.io/kadras-io/kadras-packages:0.18.0 \
+    -n kadras-system --create-namespace
   ```
 
 ## Configure the Platform
 
-The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a minimal configuration example.
+The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a minimal configuration example for a local environment, based on the `run` installation profile.
 
 ```yaml title="values.yml"
 platform:
+  profile: run
+  infrastructure_provider: local
   ingress:
     domain: 127.0.0.1.sslip.io
-
-  oci_registry:
-    server: <oci-server>
-    repository: <oci-repository>
-
-contour:
-  envoy:
-    service:
-      type: ClusterIP
-    workload:
-      hostPorts:
-        enabled: true
-
-workspace_provisioner:
-  namespaces:
-    - name: default
-  git:
-    credentials:
-      username: <git-username>
-      password: <git-token>
 ```
-
-* `<oci-server>` is the server of the OCI registry where the platform will publish and consume OCI images. It must be the same used in the previous step when creating a Secret with the OCI registry credentials. For example, `ghcr.io`, `gcr.io`, `quay.io`, `index.docker.io`.
-* `<oci-repository>` is the repository in the OCI registry where the platform will publish and consume OCI images. It must be the same used in the previous step when creating a Secret with the OCI registry credentials. For example, it might be your username or organization name depending on which OCI server you're using.
-* `<git-username>` is the name of your GitHub personal account or organization.
-* `<git-token>` is a personal access token with read permissions to your GitHub repositories.
 
 The Ingress is configured with the special domain `127.0.0.1.sslip.io` which will resolve to your localhost and be accessible via the kind cluster.
 
@@ -120,8 +74,8 @@ Reference the `values.yml` file you created in the previous step and install the
   ```shell
   kctrl package install -i engineering-platform \
     -p engineering-platform.packages.kadras.io \
-    -v 0.9.2 \
-    -n kadras-packages \
+    -v 0.16.0 \
+    -n kadras-system \
     --values-file values.yml
   ```
 
@@ -130,5 +84,5 @@ Reference the `values.yml` file you created in the previous step and install the
 Verify that all the platform components have been installed and properly reconciled.
 
   ```shell
-  kctrl package installed list -n kadras-packages 
+  kctrl package installed list -n kadras-system 
   ```
