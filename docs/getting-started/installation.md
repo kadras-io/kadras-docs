@@ -47,11 +47,11 @@ kapp deploy -a kapp-controller -y \
 
 Add the Kadras repository to make the platform packages available to the cluster.
 
-  ```shell
-  kctrl package repository add -r kadras-packages \
-    --url ghcr.io/kadras-io/kadras-packages:0.20.0 \
-    -n kadras-system --create-namespace
-  ```
+```shell
+kctrl package repository add -r kadras-packages \
+  --url ghcr.io/kadras-io/kadras-packages:0.22.0 \
+  -n kadras-system --create-namespace
+```
 
 ## Configure the Platform
 
@@ -73,13 +73,13 @@ The Ingress is configured with the special domain `127.0.0.1.sslip.io` which wil
 
 Reference the `values.yml` file you created in the previous step and install the Kadras Engineering Platform.
 
-  ```shell
-  kctrl package install -i engineering-platform \
-    -p engineering-platform.packages.kadras.io \
-    -v 0.18.0 \
-    -n kadras-system \
-    --values-file values.yml
-  ```
+```shell
+kctrl package install -i engineering-platform \
+  -p engineering-platform.packages.kadras.io \
+  -v 0.20.0 \
+  -n kadras-system \
+  --values-file values.yml
+```
 
 ## Verify the Installation
 
