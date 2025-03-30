@@ -96,8 +96,8 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/KadrasIO',
+                label: 'Bluesky',
+                href: 'https://bsky.app/profile/kadras.bsky.social',
               },
               {
                 label: 'Mastodon',
