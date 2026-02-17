@@ -15,8 +15,8 @@ Then, deploy an application from its OCI image.
 kn service create helloworld --image ghcr.io/knative/helloworld-go
 ```
 
-The application will be available through a local URL with a self-signed certificate and autoscaling capabilities.
+The application will be available through a public URL with a Let's Encrypt-issued certificate and autoscaling capabilities.
 
 ```shell
-https helloworld.default.127.0.0.1.sslip.io --verify no
+https helloworld.default.<your-domain>
 ```

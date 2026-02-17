@@ -1,0 +1,8 @@
+{
+  "label": "Hetzner",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Configuring and deploying the Kadras Engineering Platform on Hetzner Cloud."
+  }
+}
