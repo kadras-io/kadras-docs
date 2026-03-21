@@ -50,7 +50,7 @@ Create a `cluster.yml` file with the following content. Make sure to adjust the 
 ```yaml title="cluster.yml"
 cluster_name: cloud
 kubeconfig_path: "./kubeconfig"
-k3s_version: v1.35.0+k3s1
+k3s_version: v1.35.2+k3s1
 protect_against_deletion: false
 
 networking:
@@ -87,7 +87,7 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_hzc -C "hetzner-k3s cluster SSH key" 
 Then, create the cluster with the following command.
 
 ```shell
-hetzner-k3s create cluster -f cluster.yml
+hetzner-k3s create cluster --config cluster.yml
 ```
 
 It should take less than 2 minutes to create the cluster. Once the cluster is created, a kubeconfig file will be generated at the path specified in the `kubeconfig_path` field of the cluster configuration file (e.g. `./kubeconfig`). You can use this kubeconfig file to access the cluster with `kubectl`.
@@ -113,8 +113,8 @@ kapp deploy -a kapp-controller -y \
 Add the Kadras repository to make the platform packages available to the cluster.
 
 ```shell
-kctrl package repository add -r kadras-packages \
-  --url ghcr.io/kadras-io/kadras-packages:0.29.0 \
+kctrl package repository add -r kadras-packages-0.31.0 \
+  --url ghcr.io/kadras-io/kadras-packages:0.31.0 \
   -n kadras-system --create-namespace
 ```
 
@@ -154,12 +154,13 @@ The installation of the Kadras Engineering Platform can be configured via YAML. 
 
 ```yaml title="values.yml"
 platform:
-  profile: run
-  
   additional_packages:
+    - cert-manager-webhook-hetzner
+    - crossplane
     - dependency-track
     - gitops-configurer
     - kyverno
+    - metrics-server
     - postgresql-operator
   
   ingress:
@@ -227,7 +228,7 @@ Reference the `values.yml` file you created in the previous step and install the
 ```shell
 kctrl package install -i engineering-platform \
   -p engineering-platform.packages.kadras.io \
-  -v 0.29.0 \
+  -v 0.31.0 \
   -n kadras-system \
   --values-file values.yml
 ```
@@ -254,23 +255,20 @@ kctrl package installed list -n kadras-system
 You should see something like this:
 
 ```shell
-Installed packages in namespace 'kadras-system'
-
 Name                          Package Name                                     Package Version  Status  
-cert-manager                  cert-manager.packages.kadras.io                  1.19.3           Reconcile succeeded  
-cert-manager-webhook-hetzner  cert-manager-webhook-hetzner.packages.kadras.io  0.6.5            Reconcile succeeded  
-contour                       contour.packages.kadras.io                       1.33.1           Reconcile succeeded  
-dependency-track              dependency-track.packages.kadras.io              4.13.6           Reconcile succeeded  
-engineering-platform          engineering-platform.packages.kadras.io          0.28.0           Reconcile succeeded  
-flux                          flux.packages.kadras.io                          2.7.5            Reconcile succeeded  
+cert-manager                  cert-manager.packages.kadras.io                  1.20.0           Reconcile succeeded  
+cert-manager-webhook-hetzner  cert-manager-webhook-hetzner.packages.kadras.io  0.6.7            Reconcile succeeded  
+contour                       contour.packages.kadras.io                       1.33.2           Reconcile succeeded  
+crossplane                    crossplane.packages.kadras.io                    2.2.0+kadras.2   Reconcile succeeded  
+dependency-track              dependency-track.packages.kadras.io              4.14.0           Reconcile succeeded  
+engineering-platform          engineering-platform.packages.kadras.io          0.31.0           Reconcile succeeded  
+flux                          flux.packages.kadras.io                          2.8.3            Reconcile succeeded  
 gitops-configurer             gitops-configurer.packages.kadras.io             0.1.0            Reconcile succeeded  
-knative-serving               knative-serving.packages.kadras.io               1.21.0           Reconcile succeeded  
-kyverno                       kyverno.packages.kadras.io                       1.17.0           Reconcile succeeded  
+knative-serving               knative-serving.packages.kadras.io               1.21.1           Reconcile succeeded  
+kyverno                       kyverno.packages.kadras.io                       1.17.1           Reconcile succeeded  
 metrics-server                metrics-server.packages.kadras.io                0.8.1            Reconcile succeeded  
-postgresql-operator           postgresql-operator.packages.kadras.io           1.28.1           Reconcile succeeded  
+postgresql-operator           postgresql-operator.packages.kadras.io           1.28.1+kadras.1  Reconcile succeeded  
 rbac-configurer               rbac-configurer.packages.kadras.io               0.2.1            Reconcile succeeded  
-secretgen-controller          secretgen-controller.packages.kadras.io          0.20.0           Reconcile succeeded  
-workspace-provisioner         workspace-provisioner.packages.kadras.io         0.4.0            Reconcile succeeded  
-
-Succeeded
+secretgen-controller          secretgen-controller.packages.kadras.io          0.20.1           Reconcile succeeded  
+workspace-provisioner         workspace-provisioner.packages.kadras.io         0.4.0            Reconcile succeeded
 ```

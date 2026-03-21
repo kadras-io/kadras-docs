@@ -34,6 +34,16 @@ nodes:
 EOF
 ```
 
+Alternatively, you can use [k3d](https://k3d.io) to create a local Kubernetes cluster.
+
+```shell
+k3d cluster create kadras-local \
+  --image rancher/k3s:v1.35.2-k3s1 \
+  --k3s-arg "--disable=traefik@server:0" \
+  -p "80:80@loadbalancer" \
+  -p "443:443@loadbalancer"
+```
+
 ## Deploy Carvel kapp-controller
 
 The platform relies on the Kubernetes-native package management capabilities offered by Carvel [kapp-controller](https://carvel.dev/kapp-controller). You can install it with Carvel [`kapp`](https://carvel.dev/kapp/docs/latest/install) (recommended choice) or `kubectl`.
@@ -49,22 +59,22 @@ Add the Kadras repository to make the platform packages available to the cluster
 
 ```shell
 kctrl package repository add -r kadras-packages \
-  --url ghcr.io/kadras-io/kadras-packages:0.29.0 \
+  --url ghcr.io/kadras-io/kadras-packages:0.31.0 \
   -n kadras-system --create-namespace
 ```
 
 ## Configure the Platform
 
-The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a minimal configuration example for a local environment, based on the `run` installation profile.
+The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a minimal configuration example for a local environment.
 
 ```yaml title="values.yml"
 platform:
-  profile: run
   ingress:
     domain: 127.0.0.1.sslip.io
 contour:
   envoy:
-    service: NodePort
+    service:
+      type: NodePort
 ```
 
 The Ingress is configured with the special domain `127.0.0.1.sslip.io` which will resolve to your localhost and be accessible via the kind cluster.
@@ -76,7 +86,7 @@ Reference the `values.yml` file you created in the previous step and install the
 ```shell
 kctrl package install -i engineering-platform \
   -p engineering-platform.packages.kadras.io \
-  -v 0.29.0 \
+  -v 0.31.0 \
   -n kadras-system \
   --values-file values.yml
 ```
@@ -85,6 +95,20 @@ kctrl package install -i engineering-platform \
 
 Verify that all the platform components have been installed and properly reconciled.
 
-  ```shell
-  kctrl package installed list -n kadras-system 
-  ```
+```shell
+kctrl package installed list -n kadras-system
+```
+
+You should see something like this:
+
+```shell
+Name                   Package Name                              Package Version  Status  
+cert-manager           cert-manager.packages.kadras.io           1.20.0           Reconcile succeeded  
+contour                contour.packages.kadras.io                1.33.2           Reconcile succeeded  
+engineering-platform   engineering-platform.packages.kadras.io   0.30.0           Reconcile succeeded  
+flux                   flux.packages.kadras.io                   2.8.2            Reconcile succeeded  
+knative-serving        knative-serving.packages.kadras.io        1.21.1           Reconcile succeeded  
+rbac-configurer        rbac-configurer.packages.kadras.io        0.2.1            Reconcile succeeded  
+secretgen-controller   secretgen-controller.packages.kadras.io   0.20.1           Reconcile succeeded  
+workspace-provisioner  workspace-provisioner.packages.kadras.io  0.4.0            Reconcile succeeded
+```
