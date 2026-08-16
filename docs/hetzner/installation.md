@@ -113,8 +113,8 @@ kapp deploy -a kapp-controller -y \
 Add the Kadras repository to make the platform packages available to the cluster.
 
 ```shell
-kctrl package repository add -r kadras-packages-0.31.0 \
-  --url ghcr.io/kadras-io/kadras-packages:0.31.0 \
+kctrl package repository add -r kadras-packages-0.32.0 \
+  --url ghcr.io/kadras-io/kadras-packages:0.32.0 \
   -n kadras-system --create-namespace
 ```
 
@@ -228,7 +228,7 @@ Reference the `values.yml` file you created in the previous step and install the
 ```shell
 kctrl package install -i engineering-platform \
   -p engineering-platform.packages.kadras.io \
-  -v 0.31.0 \
+  -v 0.32.0 \
   -n kadras-system \
   --values-file values.yml
 ```
@@ -261,7 +261,7 @@ cert-manager-webhook-hetzner  cert-manager-webhook-hetzner.packages.kadras.io  0
 contour                       contour.packages.kadras.io                       1.33.2           Reconcile succeeded  
 crossplane                    crossplane.packages.kadras.io                    2.2.0+kadras.2   Reconcile succeeded  
 dependency-track              dependency-track.packages.kadras.io              4.14.0           Reconcile succeeded  
-engineering-platform          engineering-platform.packages.kadras.io          0.31.0           Reconcile succeeded  
+engineering-platform          engineering-platform.packages.kadras.io          0.32.0           Reconcile succeeded  
 flux                          flux.packages.kadras.io                          2.8.3            Reconcile succeeded  
 gitops-configurer             gitops-configurer.packages.kadras.io             0.1.0            Reconcile succeeded  
 knative-serving               knative-serving.packages.kadras.io               1.21.1           Reconcile succeeded  
