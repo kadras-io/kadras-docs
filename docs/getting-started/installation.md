@@ -104,7 +104,7 @@ You should see something like this:
 Name                   Package Name                              Package Version  Status  
 cert-manager           cert-manager.packages.kadras.io           1.21.3+kadras.1  Reconcile succeeded  
 engineering-platform   engineering-platform.packages.kadras.io   0.33.0           Reconcile succeeded  
-envoy-gateway          envoy-gateway.packages.kadras.io          1.10.0+kadras.1  Reconcile succeeded  
+envoy-gateway          envoy-gateway.packages.kadras.io          1.10.0+kadras.2  Reconcile succeeded  
 flux                   flux.packages.kadras.io                   2.10.0           Reconcile succeeded  
 gateway-api            gateway-api.packages.kadras.io            1.6.1            Reconcile succeeded  
 knative-serving        knative-serving.packages.kadras.io        1.24.0           Reconcile succeeded  

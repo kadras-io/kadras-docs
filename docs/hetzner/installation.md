@@ -253,7 +253,7 @@ cert-manager-webhook-hetzner  cert-manager-webhook-hetzner.packages.kadras.io  0
 crossplane                    crossplane.packages.kadras.io                    2.4.3            Reconcile succeeded  
 dependency-track              dependency-track.packages.kadras.io              5.2.1+kadras.1   Reconcile succeeded  
 engineering-platform          engineering-platform.packages.kadras.io          0.33.0           Reconcile succeeded  
-envoy-gateway                 envoy-gateway.packages.kadras.io                 1.10.0+kadras.1  Reconcile succeeded  
+envoy-gateway                 envoy-gateway.packages.kadras.io                 1.10.0+kadras.2  Reconcile succeeded  
 flux                          flux.packages.kadras.io                          2.10.0           Reconcile succeeded  
 gateway-api                   gateway-api.packages.kadras.io                   1.6.1            Reconcile succeeded  
 gitops-configurer             gitops-configurer.packages.kadras.io             0.4.0            Reconcile succeeded  
