@@ -38,7 +38,7 @@ Alternatively, you can use [k3d](https://k3d.io) to create a local Kubernetes cl
 
 ```shell
 k3d cluster create kadras-local \
-  --image rancher/k3s:v1.35.2-k3s1 \
+  --image rancher/k3s:v1.37.2-k3s1 \
   --k3s-arg "--disable=traefik@server:0" \
   -p "80:30080@server:0" \
   -p "443:30443@server:0"
