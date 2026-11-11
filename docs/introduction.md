@@ -9,12 +9,15 @@ Kadras Engineering Platform provides a foundation to support product teams in th
 The platform provides several capabilities based on open-source projects, including:
 
 * Serverless deployments with Knative
-* Ingress controller with Contour
+* Ingress via the Kubernetes Gateway API with Envoy Gateway
 * Certificate management with cert-manager
 * Secrets management with secretgen-controller
-* Policy management with Kyverno
-* Vulnerability and configuration scanning with Trivy
 * GitOps support with Flux
+* Workspaces for product teams, with access control and Pod Security Standards
+* Observability with OpenTelemetry
+* Policy management with Kyverno
 * Air-gapped support with Carvel.
+
+Each capability is shipped as a Carvel package from the [Kadras package repository](https://github.com/kadras-io/kadras-packages). The platform installs a default set of them, and the others on demand, with a common configuration for the concerns they share, like ingress, observability, and security.
 
 Get started with Kadras by [installing the platform](/docs/getting-started/installation) and [creating your first workload](/docs/getting-started/workload) on a local environment.

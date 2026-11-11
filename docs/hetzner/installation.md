@@ -33,11 +33,9 @@ In the following steps, we assume you have set the `HCLOUD_TOKEN` environment va
 export HCLOUD_TOKEN=<your-hetzner-cloud-api-token>
 ```
 
-The platform will need a domain name to be configured for the Ingress to expose the workloads. There are two options for obtaining TLS certificates for the Ingress from Let's Encrypt with cert-manager: HTTP-01 challenge or DNS-01 challenge. The HTTP-01 challenge is the default and doesn't require any additional configuration.
+The platform needs a domain name to expose the workloads over HTTPS. Each workload is served on a subdomain of the workspace it's deployed to, like `hello.apps.example.com`, with wildcard TLS certificates issued by [Let's Encrypt](https://letsencrypt.org) via cert-manager. Let's Encrypt issues wildcard certificates only via the DNS-01 challenge, which requires the platform to manage the DNS records of your domain. In this guide, we assume the DNS zone of your domain is hosted on Hetzner. For other DNS providers, like Cloudflare, or any provider with a cert-manager webhook, check out the [Kadras cert-manager documentation](https://github.com/kadras-io/package-for-cert-manager/blob/main/docs/issuers.md).
 
-The DNS-01 challenge requires you manage and update the domain DNS records on Hetzner Cloud. If that's not the case, the platform can also be installed with a custom domain registered with Cloudflare or DigitalOcean. Other providers are not supported out of the box but can be configured with some manual steps. Check the [Kadras cert-manager documentation](https://github.com/kadras-io/package-for-cert-manager/blob/main/docs/dns01.md) for more details on how to configure the ACME issuer for other DNS providers. 
-
-NOTE: If you don't have a domain name to use for the Ingress, you can use the `nip.io` service which provides wildcard DNS for any IP address. For example, if your cluster is accessible through the IP adddress `10.1.2.3`, you can use the domain `10-1-2-3.nip.io` for the Ingress. Keep in mind that using `nip.io` is not recommended for production environments.
+NOTE: If you don't have a domain name, you can use the `nip.io` service, which provides wildcard DNS for any IP address. For example, if your cluster is accessible through the IP address `10.1.2.3`, you can use the domain `10-1-2-3.nip.io`. Since you don't manage its DNS records, use the default private certificate authority of the platform instead of Let's Encrypt, by removing the `ingress.issuer` and `cert_manager` sections from the configuration below. Keep in mind that using `nip.io` is not recommended for production environments.
 
 ## Create a Kubernetes Cluster on Hetzner Cloud
 
@@ -113,8 +111,8 @@ kapp deploy -a kapp-controller -y \
 Add the Kadras repository to make the platform packages available to the cluster.
 
 ```shell
-kctrl package repository add -r kadras-packages-0.32.0 \
-  --url ghcr.io/kadras-io/kadras-packages:0.32.0 \
+kctrl package repository add -r kadras-packages \
+  --url ghcr.io/kadras-io/kadras-packages:0.33.0 \
   -n kadras-system --create-namespace
 ```
 
@@ -122,21 +120,21 @@ kctrl package repository add -r kadras-packages-0.32.0 \
 
 ### Configure the Hetzner API Token Secret for ACME Challenges
 
-If you want to use the DNS-01 challenge for ACME certificate provisioning, the platform requires a secret with the Hetzner Cloud API token to manage the ACME challenges for TLS certificate provisioning with cert-manager. If you want to use the HTTP-01 challenge instead, you can skip this step as it doesn't require any additional configuration.
+The platform requires a Secret with a Hetzner API token to solve the ACME DNS-01 challenges for the TLS certificates issued by Let's Encrypt.
 
-Generate a new [Hetzner API Token](https://cloud.digitalocean.com/account/api/tokens/new) and copy the token for later use. Make sure to grant the token the necessary permissions to manage DNS records for your domains (read & write). For more details, check out the [Hetzner documentation on generating an API token](https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/).
+Generate a new Hetzner API token from the [Hetzner Cloud Console](https://console.hetzner.com/projects), for the project hosting the DNS zone of your domain. Make sure to grant the token read and write permissions. For more details, check out the [Hetzner documentation on generating an API token](https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/).
 
-Then, create a Kubernetes Secret named `hetzner` in the `kadras-system` namespace containing your Hetzner API Token:
+Then, create a Kubernetes Secret named `hetzner-dns` in the `kadras-system` namespace containing your Hetzner API token:
 
 ```shell
 kubectl create secret generic hetzner-dns \
-  --from-literal=api-token=<your-hetzner-dns-api-token> \
+  --from-literal=api-token=<your-hetzner-api-token> \
   -n kadras-system
 ```
 
 ### Configure the OCI Pull Secret
 
-If you're planning to use private OCI images to deploy your workloads, you need to create a Kubernetes Secret with the credentials to pull the images from your container registry. If you don't need to pull private OCI images for your workloads, you can skip this step as it is not required for the platform installation.
+If you're planning to use private OCI images to deploy your workloads, you need to create a Kubernetes Secret with the credentials to pull the images from your container registry. The platform shares it with all the workspaces. If you don't need to pull private OCI images for your workloads, you can skip this step as it is not required for the platform installation.
 
 For example, for GitHub Container Registry, you can create a Personal Access Token (PAT) with the `read:packages` scope from your GitHub account and create a Kubernetes Secret named `oci-pull-secret` in the `kadras-system` namespace with the following command:
 
@@ -150,11 +148,11 @@ kubectl create secret docker-registry oci-pull-secret \
 
 ## Configure the Platform
 
-The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a minimal configuration example for a development cloud environment, based on the `run` installation profile. Make sure to update the Ingress domain and ACME email address to your own values.
+The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a configuration example for a development cloud environment. Make sure to update the domain and the email address to your own values.
 
 ```yaml title="values.yml"
-platform:
-  additional_packages:
+packages:
+  include:
     - cert-manager-webhook-hetzner
     - crossplane
     - dependency-track
@@ -162,41 +160,38 @@ platform:
     - kyverno
     - metrics-server
     - postgresql-operator
-  
-  ingress:
-    domain: <your-domain> # e.g. example.com
-    issuer:
-      type: letsencrypt
-      email: changeme@example.com # Email address for ACME registration and recovery contact
 
-  oci: # Remove this section if you don't need to pull private OCI images for your workloads
-    pull_secret:
-      name: oci-pull-secret
+ingress:
+  domain: <your-domain> # e.g. cloud.example.com
+  issuer: letsencrypt-prod-issuer
 
-# Remove this section if you want to use the HTTP-01 challenge for ACME certificate provisioning instead of the DNS-01 challenge
+workspaces:
+  - name: apps
+
+# Let's Encrypt issues the wildcard certificates via DNS-01 challenges solved with the Hetzner API
 cert_manager:
-  letsencrypt:
-    include: true
-    production: true
-    email: changeme@example.com # Email address for ACME registration and recovery contact
-    challenge:
-      type: dns01
-      dns_provider: hetzner
-      secret:
-        name: hetzner
-        key: api-token
+  issuers:
+    letsencrypt:
+      enabled: true
+      environment: production
+      email: changeme@example.com # Email address for ACME registration and recovery contact
+      solver: dns01
+      dns01:
+        provider: hetzner
+        credentials:
+          secret: hetzner-dns
+          key: api-token
+          namespace: kadras-system
 
-contour:
+envoy_gateway:
   envoy:
     service:
       annotations:
         load-balancer.hetzner.cloud/location: nbg1 # change to your cluster location, if needed
         load-balancer.hetzner.cloud/name: kadras-cloud-lb
         load-balancer.hetzner.cloud/use-private-ip: "true"
-        load-balancer.hetzner.cloud/http-redirect-https: "true"
 
 dependency_track:
-  system_requirement_check: false
   api_server:
     storage:
       size: 5Gi
@@ -204,22 +199,19 @@ dependency_track:
     storage:
       size: 10Gi
 
-flux:
-  optional_components:
-    helm_controller: true
-
 gitops_configurer:
-  type: flux-kustomization
   git:
     url: https://github.com/kadras-labs/kadras-gitops # you can change this to your own Git repository to store the GitOps configuration for your cluster
     path: clusters/cloud
 
-workspace_provisioner:
-  namespaces:
-    - name: apps
-    - name: default
-    - name: observability
+workspace_provisioner: # Remove this section if you don't need to pull private OCI images for your workloads
+  oci:
+    pull_secret:
+      name: oci-pull-secret
+      namespace: kadras-system
 ```
+
+Let's Encrypt enforces strict rate limits on its `production` environment. While trying things out, consider using the `staging` environment instead, with the `letsencrypt-staging-issuer` issuer. Its certificates aren't trusted by browsers.
 
 ## Install the Platform
 
@@ -228,21 +220,21 @@ Reference the `values.yml` file you created in the previous step and install the
 ```shell
 kctrl package install -i engineering-platform \
   -p engineering-platform.packages.kadras.io \
-  -v 0.32.0 \
+  -v 0.33.0 \
   -n kadras-system \
   --values-file values.yml
 ```
 
-The platform includes Contour as the Ingress controller by default. The installation process will create a Load Balancer on Hetzner Cloud to expose the Contour Ingress Gateway. This may take a few minutes to be provisioned and become active. Once the load balancer is active, you can retrieve its IP address with the following command.
+The platform exposes the workloads via the external Gateway of Envoy Gateway. The installation process will create a Load Balancer on Hetzner Cloud for it. This may take a few minutes to be provisioned and become active. Once the load balancer is active, you can retrieve its IP address with the following command.
 
 ```shell
-kubectl get svc -n projectcontour envoy -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+kubectl get service envoy-external -n envoy-gateway-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ```
 
-Then, you need to update the DNS records for your domain to point to the Load Balancer IP address. You can do that from the provider where your domain is registered. If your domain is registered with Hetzner Cloud, you can manage the DNS records from the Hetzner Cloud Console and navigate to the DNS settings for your domain. Either way, you need to create the following DNS records:
+Then, you need to update the DNS records for your domain to point to the Load Balancer IP address. You can do that from the provider where your domain is registered. If your domain is hosted on Hetzner, you can manage the DNS records from the Hetzner Cloud Console and navigate to the DNS settings for your domain. Either way, you need to create the following DNS records:
 
 * An A record for the root domain (e.g. `cloud.example.com`) pointing to the Load Balancer IP address.
-* A CNAME record for the wildcard subdomain (e.g. `*.cloud.example.com`) pointing to the root domain (e.g. `cloud.example.com`).
+* A CNAME record for the wildcard subdomain (e.g. `*.cloud.example.com`) pointing to the root domain (e.g. `cloud.example.com`). It also covers the workspace subdomains, like `hello.apps.cloud.example.com`.
 
 ## Verify the Installation
 
@@ -256,19 +248,21 @@ You should see something like this:
 
 ```shell
 Name                          Package Name                                     Package Version  Status  
-cert-manager                  cert-manager.packages.kadras.io                  1.20.0           Reconcile succeeded  
-cert-manager-webhook-hetzner  cert-manager-webhook-hetzner.packages.kadras.io  0.6.7            Reconcile succeeded  
-contour                       contour.packages.kadras.io                       1.33.2           Reconcile succeeded  
-crossplane                    crossplane.packages.kadras.io                    2.2.0+kadras.2   Reconcile succeeded  
-dependency-track              dependency-track.packages.kadras.io              4.14.0           Reconcile succeeded  
-engineering-platform          engineering-platform.packages.kadras.io          0.32.0           Reconcile succeeded  
-flux                          flux.packages.kadras.io                          2.8.3            Reconcile succeeded  
-gitops-configurer             gitops-configurer.packages.kadras.io             0.1.0            Reconcile succeeded  
-knative-serving               knative-serving.packages.kadras.io               1.21.1           Reconcile succeeded  
-kyverno                       kyverno.packages.kadras.io                       1.17.1           Reconcile succeeded  
-metrics-server                metrics-server.packages.kadras.io                0.8.1            Reconcile succeeded  
-postgresql-operator           postgresql-operator.packages.kadras.io           1.28.1+kadras.1  Reconcile succeeded  
-rbac-configurer               rbac-configurer.packages.kadras.io               0.2.1            Reconcile succeeded  
-secretgen-controller          secretgen-controller.packages.kadras.io          0.20.1           Reconcile succeeded  
-workspace-provisioner         workspace-provisioner.packages.kadras.io         0.4.0            Reconcile succeeded
+cert-manager                  cert-manager.packages.kadras.io                  1.21.3+kadras.1  Reconcile succeeded  
+cert-manager-webhook-hetzner  cert-manager-webhook-hetzner.packages.kadras.io  0.9.1            Reconcile succeeded  
+crossplane                    crossplane.packages.kadras.io                    2.4.3            Reconcile succeeded  
+dependency-track              dependency-track.packages.kadras.io              5.2.1+kadras.1   Reconcile succeeded  
+engineering-platform          engineering-platform.packages.kadras.io          0.33.0           Reconcile succeeded  
+envoy-gateway                 envoy-gateway.packages.kadras.io                 1.10.0+kadras.1  Reconcile succeeded  
+flux                          flux.packages.kadras.io                          2.10.0           Reconcile succeeded  
+gateway-api                   gateway-api.packages.kadras.io                   1.6.1            Reconcile succeeded  
+gitops-configurer             gitops-configurer.packages.kadras.io             0.4.0            Reconcile succeeded  
+knative-serving               knative-serving.packages.kadras.io               1.24.0           Reconcile succeeded  
+kyverno                       kyverno.packages.kadras.io                       1.19.2+kadras.1  Reconcile succeeded  
+metrics-server                metrics-server.packages.kadras.io                0.9.1+kadras.1   Reconcile succeeded  
+postgresql-operator           postgresql-operator.packages.kadras.io           1.30.1+kadras.1  Reconcile succeeded  
+secretgen-controller          secretgen-controller.packages.kadras.io          0.21.4           Reconcile succeeded  
+workspace-provisioner         workspace-provisioner.packages.kadras.io         0.6.0            Reconcile succeeded
 ```
+
+Dependency Track is available at `https://dependency-track.<your-domain>`.

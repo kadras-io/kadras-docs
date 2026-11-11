@@ -12,10 +12,10 @@ Let's discover how to install Kadras Engineering Platform on a local Kubernetes 
 Ensure you have the following tools installed in your local environment:
 
 * Kubernetes [`kubectl`](https://kubectl.docs.kubernetes.io/installation/kubectl)
-* Carvel [`kctrl`](https://carvel.dev/kapp-controller/docs/latest/install)
-* Carvel [`kapp`](https://carvel.dev/kapp-controller/docs/latest/install/#installing-kapp-controller-cli-kctrl).
+* Carvel [`kctrl`](https://carvel.dev/kapp-controller/docs/latest/install/#installing-kapp-controller-cli-kctrl)
+* Carvel [`kapp`](https://carvel.dev/kapp/docs/latest/install).
 
-Then, create a local Kubernetes cluster with [kind](https://kind.sigs.k8s.io).
+Then, create a local Kubernetes cluster with [kind](https://kind.sigs.k8s.io). The platform exposes the workloads via the node ports 30080 (HTTP) and 30443 (HTTPS), which the cluster maps to the ports 80 and 443 of your machine.
 
 ```shell
 cat <<EOF | kind create cluster --config=-
@@ -25,10 +25,10 @@ name: kadras
 nodes:
 - role: control-plane
   extraPortMappings:
-  - containerPort: 80
+  - containerPort: 30080
     hostPort: 80
     protocol: TCP
-  - containerPort: 443
+  - containerPort: 30443
     hostPort: 443
     protocol: TCP
 EOF
@@ -40,8 +40,8 @@ Alternatively, you can use [k3d](https://k3d.io) to create a local Kubernetes cl
 k3d cluster create kadras-local \
   --image rancher/k3s:v1.35.2-k3s1 \
   --k3s-arg "--disable=traefik@server:0" \
-  -p "80:80@loadbalancer" \
-  -p "443:443@loadbalancer"
+  -p "80:30080@server:0" \
+  -p "443:30443@server:0"
 ```
 
 ## Deploy Carvel kapp-controller
@@ -59,7 +59,7 @@ Add the Kadras repository to make the platform packages available to the cluster
 
 ```shell
 kctrl package repository add -r kadras-packages \
-  --url ghcr.io/kadras-io/kadras-packages:0.32.0 \
+  --url ghcr.io/kadras-io/kadras-packages:0.33.0 \
   -n kadras-system --create-namespace
 ```
 
@@ -68,16 +68,14 @@ kctrl package repository add -r kadras-packages \
 The installation of the Kadras Engineering Platform can be configured via YAML. Create a `values.yml` file with any configuration you need for the platform. The following is a minimal configuration example for a local environment.
 
 ```yaml title="values.yml"
-platform:
-  ingress:
-    domain: 127.0.0.1.sslip.io
-contour:
-  envoy:
-    service:
-      type: NodePort
+profile: local
+workspaces:
+  - name: apps
 ```
 
-The Ingress is configured with the special domain `127.0.0.1.sslip.io` which will resolve to your localhost and be accessible via the kind cluster.
+The `local` profile adapts the platform to a local cluster. The workloads are served over HTTPS on the special domain `127.0.0.1.sslip.io`, which resolves to your localhost, with certificates issued by a private certificate authority.
+
+The `apps` workspace is the namespace where you'll deploy your workloads. The platform creates it, and enforces the `restricted` [Pod Security Standard](https://kubernetes.io/docs/concepts/security/pod-security-standards/) on it.
 
 ## Install the Platform
 
@@ -86,7 +84,7 @@ Reference the `values.yml` file you created in the previous step and install the
 ```shell
 kctrl package install -i engineering-platform \
   -p engineering-platform.packages.kadras.io \
-  -v 0.32.0 \
+  -v 0.33.0 \
   -n kadras-system \
   --values-file values.yml
 ```
@@ -103,12 +101,14 @@ You should see something like this:
 
 ```shell
 Name                   Package Name                              Package Version  Status  
-cert-manager           cert-manager.packages.kadras.io           1.20.0           Reconcile succeeded  
-contour                contour.packages.kadras.io                1.33.2           Reconcile succeeded  
-engineering-platform   engineering-platform.packages.kadras.io   0.30.0           Reconcile succeeded  
-flux                   flux.packages.kadras.io                   2.8.2            Reconcile succeeded  
-knative-serving        knative-serving.packages.kadras.io        1.21.1           Reconcile succeeded  
-rbac-configurer        rbac-configurer.packages.kadras.io        0.2.1            Reconcile succeeded  
-secretgen-controller   secretgen-controller.packages.kadras.io   0.20.1           Reconcile succeeded  
-workspace-provisioner  workspace-provisioner.packages.kadras.io  0.4.0            Reconcile succeeded
+cert-manager           cert-manager.packages.kadras.io           1.21.3+kadras.1  Reconcile succeeded  
+engineering-platform   engineering-platform.packages.kadras.io   0.33.0           Reconcile succeeded  
+envoy-gateway          envoy-gateway.packages.kadras.io          1.10.0+kadras.1  Reconcile succeeded  
+flux                   flux.packages.kadras.io                   2.10.0           Reconcile succeeded  
+gateway-api            gateway-api.packages.kadras.io            1.6.1            Reconcile succeeded  
+knative-serving        knative-serving.packages.kadras.io        1.24.0           Reconcile succeeded  
+secretgen-controller   secretgen-controller.packages.kadras.io   0.21.4           Reconcile succeeded  
+workspace-provisioner  workspace-provisioner.packages.kadras.io  0.6.0            Reconcile succeeded
 ```
+
+For more configuration options, check out the [platform documentation](https://github.com/kadras-io/kadras-engineering-platform/tree/main/docs).

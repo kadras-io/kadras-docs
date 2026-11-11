@@ -9,14 +9,20 @@ Kadras Engineering Platform provides capabilities to support application deploym
 
 First, ensure you have the [Knative CLI](https://knative.dev/docs/client/) installed.
 
-Then, deploy an application from its OCI image.
+Then, deploy an application from its OCI image in the `apps` workspace.
 
 ```shell
-kn service create helloworld --image ghcr.io/knative/helloworld-go
+kn service create helloworld --image ghcr.io/knative/helloworld-go -n apps
 ```
 
-The application will be available through a public URL with a Let's Encrypt-issued certificate and autoscaling capabilities.
+The application will be available through a public URL with a Let's Encrypt-issued certificate and autoscaling capabilities. The URL follows the `<name>.<workspace>.<domain>` pattern.
 
 ```shell
-https helloworld.default.<your-domain>
+https helloworld.apps.<your-domain>
+```
+
+When you're done, you can delete the application.
+
+```shell
+kn service delete helloworld -n apps
 ```
