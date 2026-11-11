@@ -1,0 +1,70 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+
+  # =============================================
+  # Development
+  # =============================================
+
+  install:
+    desc: Install dependencies from the lockfile
+    cmds:
+      # Lifecycle scripts are not needed to build the site and are a common
+      # supply-chain attack vector, so they are disabled.
+      - yarn install --frozen-lockfile --ignore-scripts --non-interactive
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-integrity
+
+  start:
+    desc: Start the development server with live reload
+    deps: [install]
+    cmds:
+      - yarn start
+
+  clean:
+    desc: Clear the generated files, caches, and build output
+    cmds:
+      - yarn clear
+
+  # =============================================
+  # Build
+  # =============================================
+
+  build:
+    desc: Build the static website into the build directory
+    deps: [install]
+    cmds:
+      - yarn build
+
+  serve:
+    desc: Serve the built website locally
+    deps: [build]
+    cmds:
+      - yarn serve
+
+  # =============================================
+  # Checks
+  # =============================================
+
+  check:
+    desc: Run all checks
+    cmds:
+      - task: lint:actions
+      - task: typecheck
+      - task: build
+
+  typecheck:
+    desc: Type-check the TypeScript sources and configuration
+    deps: [install]
+    cmds:
+      - yarn typecheck
+
+  lint:actions:
+    desc: Lint the GitHub Actions workflows
+    cmds:
+      - actionlint

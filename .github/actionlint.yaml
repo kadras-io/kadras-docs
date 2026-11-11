@@ -1,0 +1,6 @@
+# https://github.com/rhysd/actionlint/blob/main/docs/config.md
+self-hosted-runner:
+  labels:
+    # GitHub-hosted runner not yet known to actionlint (rhysd/actionlint#runner-label).
+    # Remove once actionlint includes it.
+    - ubuntu-26.04

@@ -30,7 +30,7 @@ export default function Home(): React.JSX.Element {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
+      title={siteConfig.tagline}
       description="Toolkit to build cloud native platforms for developers.">
       <HomepageHeader />
       <main>

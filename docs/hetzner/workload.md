@@ -12,8 +12,10 @@ First, ensure you have the [Knative CLI](https://knative.dev/docs/client/) insta
 Then, deploy an application from its OCI image in the `apps` workspace.
 
 ```shell
-kn service create helloworld --image ghcr.io/knative/helloworld-go -n apps
+kn service create helloworld --image ghcr.io/knative/helloworld-go --user 1001 -n apps
 ```
+
+The `apps` workspace enforces the `restricted` Pod Security Standard, so the application runs with a non-root user (`--user`), since the sample image runs as root by default.
 
 The application will be available through a public URL with a Let's Encrypt-issued certificate and autoscaling capabilities. The URL follows the `<name>.<workspace>.<domain>` pattern.
 

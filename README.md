@@ -1,41 +1,20 @@
-# Website
+# Kadras Docs
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+Documentation website for [Kadras](https://kadras-io.github.io/kadras-docs/), built with [Docusaurus](https://docusaurus.io/).
 
-### Installation
+## Development
 
-```
-$ yarn
-```
+The development environment is managed with [devenv](https://devenv.sh), which provides Node.js, Yarn, and the rest of the tooling. Enter it with `devenv shell`, or automatically via [direnv](https://direnv.net) when entering the project directory.
 
-### Local Development
+The common tasks are defined in the [Taskfile](Taskfile.yml). Run `task --list` to see all of them.
 
-```
-$ yarn start
-```
+| Command | Description |
+|---|---|
+| `task start` | Start a local development server with live reload. |
+| `task build` | Build the static website into the `build` directory. |
+| `task serve` | Serve the built website locally. |
+| `task check` | Run all the checks, as done in CI. |
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+## Deployment
 
-### Build
-
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+The website is built on every pull request and deployed to GitHub Pages on every push to the `main` branch by the [Build and Deploy](.github/workflows/deploy.yml) workflow.

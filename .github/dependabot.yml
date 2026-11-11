@@ -6,7 +6,20 @@ updates:
       interval: daily
       time: "23:00"
       timezone: Europe/Copenhagen
+    # Wait before adopting new releases, so that compromised versions
+    # are likely to be detected and unpublished before they reach us.
+    cooldown:
+      default-days: 3
     open-pull-requests-limit: 10
+    groups:
+      docusaurus:
+        patterns:
+          - "@docusaurus/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
     labels:
       - "dependencies"
     commit-message:
@@ -17,6 +30,8 @@ updates:
       interval: daily
       time: "00:30"
       timezone: Europe/Copenhagen
+    cooldown:
+      default-days: 3
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
