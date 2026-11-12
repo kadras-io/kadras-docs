@@ -60,7 +60,7 @@ Add the Kadras repository to make the platform packages available to the cluster
 
 ```shell
 kctrl package repository add -r kadras-packages \
-  --url ghcr.io/kadras-io/kadras-packages:0.33.1 \
+  --url ghcr.io/kadras-io/kadras-packages:0.33.2 \
   -n kadras-system --create-namespace
 ```
 
@@ -85,7 +85,7 @@ Reference the `values.yml` file you created in the previous step and install the
 ```shell
 kctrl package install -i engineering-platform \
   -p engineering-platform.packages.kadras.io \
-  -v 0.33.1 \
+  -v 0.33.2 \
   -n kadras-system \
   --values-file values.yml
 ```
@@ -103,12 +103,12 @@ You should see something like this:
 ```shell
 Name                   Package Name                              Package Version  Status  
 cert-manager           cert-manager.packages.kadras.io           1.21.3+kadras.1  Reconcile succeeded  
-engineering-platform   engineering-platform.packages.kadras.io   0.33.1           Reconcile succeeded  
-envoy-gateway          envoy-gateway.packages.kadras.io          1.10.0+kadras.2  Reconcile succeeded  
+engineering-platform   engineering-platform.packages.kadras.io   0.33.2           Reconcile succeeded  
+envoy-gateway          envoy-gateway.packages.kadras.io          1.10.0+kadras.3  Reconcile succeeded  
 flux                   flux.packages.kadras.io                   2.10.0           Reconcile succeeded  
-gateway-api            gateway-api.packages.kadras.io            1.6.1            Reconcile succeeded  
+gateway-api            gateway-api.packages.kadras.io            1.6.1+kadras.1   Reconcile succeeded  
 knative-serving        knative-serving.packages.kadras.io        1.24.0           Reconcile succeeded  
-secretgen-controller   secretgen-controller.packages.kadras.io   0.21.4           Reconcile succeeded  
+secretgen-controller   secretgen-controller.packages.kadras.io   0.21.4+kadras.1  Reconcile succeeded  
 workspace-provisioner  workspace-provisioner.packages.kadras.io  0.6.0            Reconcile succeeded
 ```
 
