@@ -17,10 +17,16 @@ kn service create hello --image ghcr.io/knative/helloworld-go --user 1001 -n app
 
 The workspace enforces the `restricted` Pod Security Standard. Knative sets most of the required security settings on the application containers for you, like dropping all capabilities, and requires them to run as a non-root user. The sample image runs as root by default, so it's run with a non-root user via `--user`.
 
-The application will be available through a local URL with a self-signed certificate and autoscaling capabilities. The URL follows the `<name>.<workspace>.<domain>` pattern.
+The application will be available through a local URL with a self-signed certificate and autoscaling capabilities. The URL follows the `<name>.<workspace>.<domain>` pattern. The certificate is issued by the private certificate authority of the platform, so skip its verification.
 
 ```shell
-https hello.apps.127.0.0.1.sslip.io --verify no
+curl -k https://hello.apps.127.0.0.1.sslip.io
+```
+
+Knative scales the application down to zero when it doesn't receive requests for a while, and back up at the next request.
+
+```shell
+kubectl get pods -n apps --watch
 ```
 
 When you're done, you can delete the application.
@@ -28,3 +34,5 @@ When you're done, you can delete the application.
 ```shell
 kn service delete hello -n apps
 ```
+
+Next, learn how to give your team access to the workspace in [Workspaces and Access](/docs/getting-started/workspaces).

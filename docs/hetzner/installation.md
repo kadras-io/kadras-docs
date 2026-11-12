@@ -236,6 +236,27 @@ Then, you need to update the DNS records for your domain to point to the Load Ba
 * An A record for the root domain (e.g. `cloud.example.com`) pointing to the Load Balancer IP address.
 * A CNAME record for the wildcard subdomain (e.g. `*.cloud.example.com`) pointing to the root domain (e.g. `cloud.example.com`). It also covers the workspace subdomains, like `hello.apps.cloud.example.com`.
 
+Once the DNS records are in place, cert-manager issues the wildcard certificates of the Gateway via DNS-01 challenges: one for the domain, and one for each workspace. It can take a few minutes, depending on the propagation of the DNS records. Check that the certificates are ready.
+
+```shell
+kubectl get certificates -n envoy-gateway-system
+```
+
+You should see something like this:
+
+```shell
+NAME                                           READY   SECRET                                         AGE
+external-tls                                   True    external-tls                                   3m
+external-wildcard-apps-cloud-example-com-tls   True    external-wildcard-apps-cloud-example-com-tls   3m
+```
+
+If a certificate isn't ready after a few minutes, check the status of its ACME challenges.
+
+```shell
+kubectl get challenges -A
+kubectl describe challenges -A
+```
+
 ## Verify the Installation
 
 Verify that all the platform components have been installed and properly reconciled.

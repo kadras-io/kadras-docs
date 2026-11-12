@@ -14,7 +14,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/undraw_lost_online_re_upmy.svg').default,
     description: (
       <>
-        Kadras provides an <a href="https://github.com/kadras-io/engineering-platform">engineering platform</a> you can use as a foundation
+        Kadras provides an <a href="https://github.com/kadras-io/kadras-engineering-platform">engineering platform</a> you can use as a foundation
         to implement your own cloud native internal platforms.
       </>
     ),

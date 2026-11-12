@@ -20,7 +20,7 @@ The `apps` workspace enforces the `restricted` Pod Security Standard, so the app
 The application will be available through a public URL with a Let's Encrypt-issued certificate and autoscaling capabilities. The URL follows the `<name>.<workspace>.<domain>` pattern.
 
 ```shell
-https helloworld.apps.<your-domain>
+curl https://helloworld.apps.<your-domain>
 ```
 
 When you're done, you can delete the application.
